@@ -31,6 +31,7 @@ t_alloc = allocate_time(waypts,T);
 % end
 
 Q_total = calQ(t_alloc);
+t_alloc = [0 0.2 0.4 0.8 1.2];
 
 % x_coeff is the list of polynomial coefficients for k segments, size: k*(n+1)
 x_coeff = min_snap_sigle_axis_monomial(n_order, k, t_alloc, Q_total, waypts(1,:));
@@ -65,6 +66,7 @@ for i=1:length(waypts)
     t_alloc_bernstein(i)=i-1;
 end
 
+
 Q_total_bern = calQ(t_alloc_bernstein);
 cx=min_snap_sigle_axis_bezier(n_order, k, t_alloc_bernstein, Q_total_bern, waypts(1,:));
 cy=min_snap_sigle_axis_bezier(n_order, k, t_alloc_bernstein, Q_total_bern, waypts(2,:));
@@ -80,13 +82,28 @@ title('minimum snap trajectory bezier');
 color = ['grcb'];
 px=[];
 py=[];
+% for i=1:k
+%     t_sequence = t_alloc_bernstein(i):0.01:t_alloc_bernstein(i+1); %get the time tick for current segment
+%     for j=1:length(t_sequence) % for each time tick within the segment, evaluate x and y position
+%         px = [px poly_evaluate(0,t_sequence(j),n_order)*M*cx(:,i)];
+%         py = [py poly_evaluate(0,t_sequence(j),n_order)*M*cy(:,i)];
+%         plot(px,py,color(i));
+%     end
+%     px = [];
+%     py = [];
+% end
+
 for i=1:k
-    t_sequence = t_alloc_bernstein(i):0.01:t_alloc_bernstein(i+1); %get the time tick for current segment
-    for j=1:length(t_sequence) % for each time tick within the segment, evaluate x and y position
-        px = [px poly_evaluate(0,t_sequence(j),n_order)*M*cx(:,i)];
-        py = [py poly_evaluate(0,t_sequence(j),n_order)*M*cy(:,i)];
+    t_sequence = t_alloc_bernstein(i):0.01:t_alloc_bernstein(i+1);
+    cx_ = cx(:,i);
+    cy_ = cy(:,i);
+    for j=1:length(t_sequence)
+        px = [px evaluateB(cx_',t_sequence(j),n_order)];
+        py = [py evaluateB(cy_',t_sequence(j),n_order)];
         plot(px,py,color(i));
     end
-    px = [];
-    py = [];
+    px=[];
+    py=[];
 end
+
+%plot(cx(:,1),cy(:,2),'*r');

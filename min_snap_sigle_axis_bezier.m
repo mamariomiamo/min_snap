@@ -63,7 +63,7 @@ end
 
 A_eq = A_eq*M_all;
 Q_total = M_all'*Q_total*M_all;
-Q_total = nearestSPD(Q_total);
+%Q_total = nearestSPD(Q_total);
 
 %% Inequality Constraints
 A_ineq = zeros((4*k+2),(n_order+1)*k);
