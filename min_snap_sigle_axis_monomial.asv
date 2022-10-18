@@ -36,7 +36,7 @@ b_eq(6) = 0; % final a
 % between
 row_no=7;
 for i=1:k-1
-    A_eq(row_no, i*(n_order+1)+1:i*(n_order+1)+1+n_order) = poly_evaluate(0,0,n_order);
+    A_eq(row_no, i*(n_order+1)+1:i*(n_order+1)+1+n_order) = poly_evaluate(0,t_alloc(i+1),n_order);
     b_eq(row_no) = waypts(i+1);
     row_no = row_no+1;
 end
@@ -46,11 +46,11 @@ end
 
 % continuous constraints
 for i=1:k-1
-    A_eq(row_no,(i-1)*(n_order+1)+1:(i+1)*(n_order+1)) = [poly_evaluate(0,t_alloc(i),n_order) -1*poly_evaluate(0,0,n_order)];
+    A_eq(row_no,(i-1)*(n_order+1)+1:(i+1)*(n_order+1)) = [poly_evaluate(0,t_alloc(i+1),n_order) -1*poly_evaluate(0,t_alloc(i+1),n_order)];
     row_no = row_no+1;
-    A_eq(row_no,(i-1)*(n_order+1)+1:(i+1)*(n_order+1)) = [poly_evaluate(1,t_alloc(i),n_order) -1*poly_evaluate(1,0,n_order)];
+    A_eq(row_no,(i-1)*(n_order+1)+1:(i+1)*(n_order+1)) = [poly_evaluate(1,t_alloc(i+1),n_order) -1*poly_evaluate(1,t_alloc(i+1),n_order)];
     row_no = row_no+1;
-    A_eq(row_no,(i-1)*(n_order+1)+1:(i+1)*(n_order+1)) = [poly_evaluate(2,t_alloc(i),n_order) -1*poly_evaluate(2,0,n_order)];
+    A_eq(row_no,(i-1)*(n_order+1)+1:(i+1)*(n_order+1)) = [poly_evaluate(2,t_alloc(i+1),n_order) -1*poly_evaluate(2,t_alloc(i+1),n_order)];
     row_no = row_no+1;
 end
 
@@ -64,6 +64,5 @@ f = zeros((n_order+1)*k,1);
 %% solve QP
 p = quadprog(Q_total, f, A_ineq, b_ineq, A_eq, b_eq);
 p=reshape(p,[n_order+1,k]);
-A_eq
-b_eq
+
 end
